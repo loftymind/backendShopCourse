@@ -1,17 +1,35 @@
-// import * as cdk from 'aws-cdk-lib';
-// import { Template } from 'aws-cdk-lib/assertions';
-// import * as BackendShopCourse from '../lib/backend_shop_course-stack';
+import { handler as getProductsList } from '../src/lambdas/getProductList';
+import { handler as getProductsById } from '../src/lambdas/grtProductsById';
+import { dataProducts } from '../src/data/data';
+import { buildResponse } from '../src/utils/utils';
 
-// example test. To run these tests, uncomment this file along with the
-// example resource in lib/backend_shop_course-stack.ts
-test('SQS Queue Created', () => {
-//   const app = new cdk.App();
-//     // WHEN
-//   const stack = new BackendShopCourse.BackendShopCourseStack(app, 'MyTestStack');
-//     // THEN
-//   const template = Template.fromStack(stack);
+describe('product service test', () => {
+  it('returns products array', async () => {
+    const productList = await getProductsList();
+    expect(productList).toEqual(buildResponse(200, dataProducts));
+  });
 
-//   template.hasResourceProperties('AWS::SQS::Queue', {
-//     VisibilityTimeout: 300
-//   });
+  it('returns Product not found!', async () => {
+    const expectedResult = {
+      pathParameters: {
+        productId: '222',
+      },
+    };
+    const productItem = await getProductsById(expectedResult);
+    expect(productItem).toEqual(
+      buildResponse(404, {
+        message: 'Product not found!',
+      })
+    );
+  });
+
+  it('returns correct id prodduct', async () => {
+    const expectedResult = {
+      pathParameters: {
+        productId: '1',
+      },
+    };
+    const productItem = await getProductsById(expectedResult);
+    expect(productItem).toEqual(buildResponse(200, dataProducts[0]));
+  });
 });
