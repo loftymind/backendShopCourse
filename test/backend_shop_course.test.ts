@@ -9,7 +9,16 @@ describe('product service test', () => {
     expect(productList).toEqual(buildResponse(200, dataProducts));
   });
 
-  it('returns Product not found!', async () => {
+  it('returns correct id prodduct', async () => {
+    const expectedResult = {
+      pathParameters: {
+        productId: '1',
+      },
+    };
+    const productItem = await getProductsById(expectedResult);
+    expect(productItem).toEqual(buildResponse(200, dataProducts[0]));
+  });
+    it('returns Product not found!', async () => {
     const expectedResult = {
       pathParameters: {
         productId: '222',
@@ -21,15 +30,5 @@ describe('product service test', () => {
         message: 'Product not found!',
       })
     );
-  });
-
-  it('returns correct id prodduct', async () => {
-    const expectedResult = {
-      pathParameters: {
-        productId: '1',
-      },
-    };
-    const productItem = await getProductsById(expectedResult);
-    expect(productItem).toEqual(buildResponse(200, dataProducts[0]));
   });
 });
