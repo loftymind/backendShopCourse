@@ -1,10 +1,21 @@
-export const buildResponse = (statusCode: any, body: any) => ({
-  statusCode,
-  headers: {
-    'Access-Control-Allow-Credentials': true,
-    'Access-Control-Allow-Origins': '*',
-    'Access-Control-Allow-Headers': '*',
-  },
-  body: JSON.stringify(body),
-});
+/* type JSON = string | number | boolean | { [x: string]: JSON } | Array<JSON>;
 
+type Headers = Record<string, string | boolean>; */
+
+export interface Response {
+  statusCode: number;
+  body: string;
+  headers: Headers;
+}
+
+export const buildResponse = (statusCode: number, body: JSON): Response => {
+  return {
+    statusCode,
+    body: JSON.stringify(body),
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Headers": "*",
+      "Access-Control-Allow-Credentials": true,
+    },
+  };
+};
